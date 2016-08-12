@@ -8,6 +8,8 @@
 #include <string.h>
 #include <ctype.h>
 
+#include "pack.h"
+
 #define MIN(X,Y) ((X) < (Y) ? (X) : (Y))
 
 /*
@@ -95,132 +97,6 @@ static void hexdump(void *mem, unsigned int len)
 		}
 	}
 }
-
-/*
- * https://github.com/xoreos/xoreos-docs/blob/master/specs/bioware/KeyBIF_Format.pdf
- * http://witcher.wikia.com/wiki/KEY_BIF_V1.1_format
- */
-enum e_res_type {
-	RES_TYPE_RES = 0, /* misc GFF resources */
-	RES_TYPE_BMP = 1, /* Microsoft Windows Bitmap */
-	RES_TYPE_MVE = 2,
-	RES_TYPE_TGA = 3, /* Targa Graphics Format */
-	RES_TYPE_WAV = 4, /* Waveform Audio File */
-	RES_TYPE_PLT = 6, /* Bioware Packed Layer Texture */
-	RES_TYPE_INI = 7, /* Windows INI */
-	RES_TYPE_MP3 = 8, /* MP3 */
-	RES_TYPE_MPG = 9, /* MPEG */
-	RES_TYPE_TXT = 10, /* Text file */
-	RES_TYPE_XML = 11, /* XML */
-	RES_TYPE_PLH = 2000,
-	RES_TYPE_TEX = 2001,
-	RES_TYPE_MDL = 2002, /* Model */
-	RES_TYPE_THG = 2003,
-	RES_TYPE_FNT = 2005, /* Font */
-	RES_TYPE_LUA = 2007, /* Lua script source code */
-	RES_TYPE_SLT = 2008,
-	RES_TYPE_NSS = 2009, /* NWScript source code */
-	RES_TYPE_NCS = 2010, /* NWScript bytecode */
-	RES_TYPE_MOD = 2011, /* Module */
-	RES_TYPE_ARE = 2012, /* Area (GFF) */
-	RES_TYPE_SET = 2013, /* Tileset (unused in KOTOR?) */
-	RES_TYPE_IFO = 2014, /* Module information */
-	RES_TYPE_BIC = 2015, /* Character sheet (unused) */
-	RES_TYPE_WOK = 2016, /* walk-mesh */
-	RES_TYPE_2DA = 2017, /* 2-dimensional array */
-	RES_TYPE_TLK = 2018, /* conversation file */
-	RES_TYPE_TXI = 2022, /* texture information */
-	RES_TYPE_GIT = 2023, /* dynamic area information, game instance file,
-	                        all area and objects that are scriptable */
-	RES_TYPE_BTI = 2024,
-	RES_TYPE_UTI = 2025, /* item blueprint */
-	RES_TYPE_BTC = 2026,
-	RES_TYPE_UTC = 2027, /* creature blueprint */
-	RES_TYPE_DLG = 2029, /* dialogue */
-	RES_TYPE_ITP = 2030, /* tile blueprint pallet file */
-	RES_TYPE_BTT = 2031,
-	RES_TYPE_UTT = 2032, /* trigger blueprint */
-	RES_TYPE_DDS = 2033, /* compressed texture file */
-	RES_TYPE_BTS = 2034,
-	RES_TYPE_UTS = 2035, /* sound blueprint */
-	RES_TYPE_LTR = 2036, /* letter combo probability inf */
-	RES_TYPE_GFF = 2037, /* generic file format */
-	RES_TYPE_FAC = 2038, /* faction file */
-	RES_TYPE_BTE = 2039,
-	RES_TYPE_UTE = 2040, /* encounter blueprint */
-	RES_TYPE_BTD = 2041,
-	RES_TYPE_UTD = 2042, /* door blueprint */
-	RES_TYPE_BTP = 2043,
-	RES_TYPE_UTP = 2044, /* placeable object blueprint */
-	RES_TYPE_DFT = 2045, /* default values file (text-ini) */
-	RES_TYPE_GIC = 2046, /* game instance comments */
-	RES_TYPE_GUI = 2047, /* GUI definition (GFF) */
-	RES_TYPE_CSS = 2048,
-	RES_TYPE_CCS = 2049,
-	RES_TYPE_BTM = 2050,
-	RES_TYPE_UTM = 2051, /* store merchant blueprint */
-	RES_TYPE_DWK = 2052, /* door walkmesh */
-	RES_TYPE_PWK = 2053, /* placeable object walkmesh */
-	RES_TYPE_BTG = 2054,
-	RES_TYPE_JRL = 2056, /* journal */
-	RES_TYPE_SAV = 2057, /* saved game (ERF) */
-	RES_TYPE_UTW = 2058, /* waypoint blueprint */
-	RES_TYPE_4PC = 2059,
-	RES_TYPE_SSF = 2060, /* sound set file */
-	RES_TYPE_BIK = 2063, /* movie file (bik format) */
-	RES_TYPE_NDB = 2064, /* script debugger file */
-	RES_TYPE_PTM = 2065, /* plot manager/plot instance */
-	RES_TYPE_PTT = 2066, /* plot wizard blueprint */
-	RES_TYPE_NCM = 2067,
-	RES_TYPE_MFX = 2068,
-	RES_TYPE_MAT = 2069,
-	RES_TYPE_MDB = 2070, /* not the standard MDB, multiple file formats present
-	                        despite same type */
-	RES_TYPE_SAY = 2071,
-	RES_TYPE_TTF = 2072, /* standard .ttf font files */
-	RES_TYPE_TTC = 2073,
-	RES_TYPE_CUT = 2074, /* cutscene? (GFF) */
-	RES_TYPE_KA = 2075, /* karma file (XML) */
-	RES_TYPE_JPG = 2076, /* jpg image */
-	RES_TYPE_ICO = 2077, /* standard windows .ico files */
-	RES_TYPE_OGG = 2078, /* ogg vorbis sound file */
-	RES_TYPE_SPT = 2079,
-	RES_TYPE_SPW = 2080,
-	RES_TYPE_WFX = 2081, /* woot effect class (XML) */
-	RES_TYPE_UGM = 2082, /* 2082 ??? [textures00.bif] */
-	RES_TYPE_QDB = 2083, /* quest database (GFF v3.38) */
-	RES_TYPE_QST = 2084, /* quest (GFF) */
-	RES_TYPE_NPC = 2085,
-	RES_TYPE_SPN = 2086,
-	RES_TYPE_UTX = 2087, /* spawn point? (GFF) */
-	RES_TYPE_MMD = 2088,
-	RES_TYPE_SMM = 2089,
-	RES_TYPE_UTA = 2090, /* uta (GFF) */
-	RES_TYPE_MDE = 2091,
-	RES_TYPE_MDV = 2092,
-	RES_TYPE_MDA = 2093,
-	RES_TYPE_MBA = 2094,
-	RES_TYPE_OCT = 2095,
-	RES_TYPE_BFX = 2096,
-	RES_TYPE_PDB = 2097,
-	RES_TYPE_TWS = 2098, /* TheWitcherSave */
-	RES_TYPE_PVS = 2099,
-	RES_TYPE_CFX = 2100,
-	RES_TYPE_LUC = 2101, /* compiled lua script */
-	RES_TYPE_PRB = 2103,
-	RES_TYPE_CAM = 2104,
-	RES_TYPE_VDS = 2105,
-	RES_TYPE_BIN = 2106,
-	RES_TYPE_WOB = 2107,
-	RES_TYPE_API = 2108,
-	RES_TYPE_PROP = 2109, /* properties */
-	RES_TYPE_PNG = 2110,
-
-	RES_TYPE_BIG = 9995,
-	RES_TYPE_ERF = 9997, /* bncapsulated resource format */
-	RES_TYPE_BIF = 9998,
-	RES_TYPE_KEY = 9999,
-};
 
 static int bifv1_read_header(struct bifv1 * bif, uint8_t * buf)
 {
@@ -334,14 +210,13 @@ int bifv1_extract_data(int fd, struct bifv1 * bif)
 	uint8_t buf[1024];
 	ssize_t n, size, written;
 	int fd2;
-	char filename[80];
+	char filename[80], *ext;
 
 	memset((void*)buf, 0, sizeof(buf));
 	for (i = 0; i < bif->header.variable_res_count; i++) {
-		if (bif->vrt[i].type != RES_TYPE_WAV)
-			continue;
+		ext = resouce_to_extension(bif->vrt[i].type);
+		sprintf(filename, "data/output/%08u.%s", bif->vrt[i].id, ext);
 
-		sprintf(filename, "data/output/%08u.wav", bif->vrt[i].id);
 		if ((fd2 = open(filename, O_RDWR|O_CREAT)) < 0) {
 			printf("open: %d, %s\n", errno, strerror(errno));
 			return -2;
